@@ -4,6 +4,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 // Variables globales
 let currentPdfDoc = null;
 let convertedImages = [];
+let currentPdfFileName = ''; // Guardar nombre del PDF
 
 // Elementos del DOM
 const pdfInput = document.getElementById('pdfInput');
@@ -77,6 +78,9 @@ function handlePageRangeChange() {
 }
 
 async function processFile(file) {
+    // Guardar nombre del PDF sin extensión y en minúsculas
+    currentPdfFileName = file.name.replace('.pdf', '').toLowerCase();
+    
     // Validar tamaño
     if (file.size > 52428800) { // 50 MB
         showError('⚠️ El archivo es muy grande. Máximo 50 MB.');
@@ -155,6 +159,9 @@ async function convertPdf() {
 
     const quality = parseFloat(qualitySelect.value);
     const totalPages = pagesToConvert.length;
+    
+    // Obtener fecha actual en formato YYYY-MM-DD
+    const today = new Date().toISOString().split('T')[0];
 
     try {
         for (let i = 0; i < pagesToConvert.length; i++) {
@@ -183,7 +190,7 @@ async function convertPdf() {
                     page: pageNum,
                     data: imageData,
                     size: fileSize,
-                    filename: `pagina_${pageNum}.png`
+                    filename: `${currentPdfFileName}_${today}_page_${pageNum}.png`
                 });
 
                 // Actualizar progreso
@@ -206,35 +213,7 @@ async function convertPdf() {
 }
 
 function showResults() {
-    hideAllSections();
-    resultsSection.style.display = 'block';
-    gallery.innerHTML = '';
-
-    convertedImages.forEach((img) => {
-        const col = document.createElement('div');
-        col.className = 'col';
-        col.innerHTML = `
-            <div class="card h-100">
-                <div class="image-container">
-                    <img src="${img.data}" alt="Página ${img.page}" loading="lazy">
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">Página ${img.page}</h5>
-                    <p class="card-text text-muted"><small>${img.size} KB</small></p>
-                    <div class="btn-group mt-auto" role="group">
-                        <button class="btn btn-sm btn-primary" onclick="downloadImage(${convertedImages.indexOf(img)})">
-                            <i class="bi bi-download"></i> Descargar
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="viewImage(${convertedImages.indexOf(img)})">
-                            <i class="bi bi-eye"></i> Ver
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        gallery.appendChild(col);
-    });
-}
+    hideAllSections();\n    resultsSection.style.display = 'block';\n    gallery.innerHTML = '';\n\n    convertedImages.forEach((img, index) => {\n        const card = document.createElement('div');\n        card.className = 'image-card';\n        card.innerHTML = `\n            <div class=\"card h-100 border-0\">\n                <div class=\"image-container\">\n                    <img src=\"${img.data}\" alt=\"Página ${img.page}\" loading=\"lazy\">\n                </div>\n                <div class=\"card-body p-2\">\n                    <h6 class=\"card-title text-truncate mb-1\">Page ${img.page}</h6>\n                    <small class=\"text-muted d-block mb-2\">${img.size} KB</small>\n                    <button class=\"btn btn-sm btn-primary w-100\" onclick=\"downloadImage(${index})\">\n                        <i class=\"bi bi-download\"></i>\n                    </button>\n                </div>\n            </div>\n        `;\n        gallery.appendChild(card);\n    });\n}
 
 function downloadImage(index) {
     const img = convertedImages[index];
