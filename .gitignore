@@ -1,0 +1,26 @@
+# Dependencias
+node_modules/
+package-lock.json
+yarn.lock
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Compilación y distribución
+dist/
+build/
+*.map
+
+# Archivos temporales
+*.tmp
+*.log
+.cache/
+
+# Env
+.env
+.env.local
