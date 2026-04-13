@@ -305,10 +305,3 @@ function showError(message) {
     errorText.textContent = message;
     errorMsg.style.display = 'block';
 }
-
-// Permitir click en el input al hacer click en la caja
-document.querySelector('.upload-label').addEventListener('click', (e) => {
-    if (e.target !== pdfInput) {
-        pdfInput.click();
-    }
-});
