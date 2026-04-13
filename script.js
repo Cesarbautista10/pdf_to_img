@@ -153,7 +153,8 @@ async function convertPdf() {
         return;
     }
 
-    hideAllSections();
+    errorMsg.style.display = 'none';
+    resultsSection.style.display = 'none';
     progressSection.style.display = 'block';
     convertBtn.disabled = true;
 
@@ -213,7 +214,30 @@ async function convertPdf() {
 }
 
 function showResults() {
-    hideAllSections();\n    resultsSection.style.display = 'block';\n    gallery.innerHTML = '';\n\n    convertedImages.forEach((img, index) => {\n        const card = document.createElement('div');\n        card.className = 'image-card';\n        card.innerHTML = `\n            <div class=\"card h-100 border-0\">\n                <div class=\"image-container\">\n                    <img src=\"${img.data}\" alt=\"Página ${img.page}\" loading=\"lazy\">\n                </div>\n                <div class=\"card-body p-2\">\n                    <h6 class=\"card-title text-truncate mb-1\">Page ${img.page}</h6>\n                    <small class=\"text-muted d-block mb-2\">${img.size} KB</small>\n                    <button class=\"btn btn-sm btn-primary w-100\" onclick=\"downloadImage(${index})\">\n                        <i class=\"bi bi-download\"></i>\n                    </button>\n                </div>\n            </div>\n        `;\n        gallery.appendChild(card);\n    });\n}
+    progressSection.style.display = 'none';
+    resultsSection.style.display = 'block';
+    gallery.innerHTML = '';
+
+    convertedImages.forEach((img, index) => {
+        const card = document.createElement('div');
+        card.className = 'image-card';
+        card.innerHTML = `
+            <div class="card h-100 border-0">
+                <div class="image-container">
+                    <img src="${img.data}" alt="Página ${img.page}" loading="lazy">
+                </div>
+                <div class="card-body p-2">
+                    <h6 class="card-title text-truncate mb-1">Page ${img.page}</h6>
+                    <small class="text-muted d-block mb-2">${img.size} KB</small>
+                    <button class="btn btn-sm btn-primary w-100" onclick="downloadImage(${index})">
+                        <i class="bi bi-download"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        gallery.appendChild(card);
+    });
+}
 
 function downloadImage(index) {
     const img = convertedImages[index];
